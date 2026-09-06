@@ -5,18 +5,10 @@
   "description": "Full-stack Multilingual AI Chatbot with FastAPI backend (Gemini + MongoDB) and Vite frontend",
   "scripts": {
     "dev": "npm --prefix frontend run dev",
-    "build": "npm --prefix frontend run build",
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
     "preview": "npm --prefix frontend run preview"
   },
-  "keywords": [
-    "chatbot",
-    "multilingual",
-    "fastapi",
-    "gemini",
-    "mongodb",
-    "vite",
-    "fullstack"
-  ],
-  "author": "Santanu Ghosh",
-  "license": "MIT"
+  "dependencies": {
+    "vite": "^6.2.0"
+  }
 }
