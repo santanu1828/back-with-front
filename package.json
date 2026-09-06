@@ -1,0 +1,20 @@
+﻿{
+  "name": "omnichat",
+  "version": "1.0.0",
+  "description": "OmniChat - Multilingual Chatbot Front-End Interface",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "chatbot",
+    "multilingual",
+    "unicode",
+    "bidi",
+    "rtl",
+    "gemini",
+    "vercel"
+  ],
+  "author": "Santanu Ghosh",
+  "license": "MIT"
+}

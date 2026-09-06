@@ -6,6 +6,7 @@ yarn-error.log*
 
 # Environment & Dependencies
 node_modules/
+.vercel
 .env
 .env.local
 

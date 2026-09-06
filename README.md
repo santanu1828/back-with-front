@@ -51,6 +51,21 @@ npx serve .
 
 ---
 
+## ⚡ Deploy to Vercel
+
+OmniChat is fully pre-configured for instant zero-configuration deployment on **Vercel** with optimized security headers and asset caching via `vercel.json`.
+
+### Method A: One-Click Deploy
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/santanu1828/project-1)
+
+### Method B: Via Vercel Dashboard
+1. Go to [vercel.com/new](https://vercel.com/new).
+2. Sign in with GitHub and select **`santanu1828/project-1`**.
+3. Keep the default settings (Framework Preset: **Other**) and click **Deploy**.
+4. Your site will be live instantly with a free `.vercel.app` URL and automatic HTTPS!
+
+---
+
 ## 🔌 Backend Integration Guide
 
 Connecting this front-end to your backend is as simple as configuring one line in `app.js`.
