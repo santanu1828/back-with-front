@@ -30,39 +30,44 @@ A clean, responsive, and mobile-friendly front-end interface for chatbots, desig
 
 ---
 
-## 🚀 How to Run
+## 🚀 Getting Started
 
-### Option 1: Direct Browser Launch
-Simply double-click `index.html` or open it with your favorite web browser (Chrome, Edge, Firefox, Safari).
-
-### Option 2: Local HTTP Server
-
-**Using Python:**
+### Local Development (Vite)
 ```bash
-# Python 3
-python -m http.server 8000
+# Install dependencies
+npm install
+
+# Start local dev server with Hot Module Replacement (HMR)
+npm run dev
 ```
-Then visit `http://localhost:8000` in your browser.
+Then open `http://localhost:3000` in your browser.
 
-**Using Node.js (`npx serve`):**
+### Production Build & Preview
 ```bash
-npx serve .
+# Build optimized static bundle in dist/
+npm run build
+
+# Preview production build locally
+npm run preview
 ```
 
 ---
 
 ## ⚡ Deploy to Vercel
 
-OmniChat is fully pre-configured for instant zero-configuration deployment on **Vercel** with optimized security headers and asset caching via `vercel.json`.
+OmniChat is built with **Vite** and configured for instant zero-configuration deployment on **Vercel**.
 
 ### Method A: One-Click Deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/santanu1828/project-1)
 
 ### Method B: Via Vercel Dashboard
 1. Go to [vercel.com/new](https://vercel.com/new).
-2. Sign in with GitHub and select **`santanu1828/project-1`**.
-3. Keep the default settings (Framework Preset: **Other**) and click **Deploy**.
-4. Your site will be live instantly with a free `.vercel.app` URL and automatic HTTPS!
+2. Sign in with GitHub and import **`santanu1828/project-1`**.
+3. Vercel automatically detects the **Vite** framework preset:
+   - **Build Command**: `vite build`
+   - **Output Directory**: `dist`
+   - **Install Command**: `npm install`
+4. Click **Deploy**. Your site will be live instantly with a free `.vercel.app` domain and automatic SSL!
 
 ---
 
@@ -140,11 +145,17 @@ app.listen(8000, () => console.log('Chat backend running on port 8000'));
 ---
 
 ## 📁 Project Structure
-
+ 
 ```
-project 1/
-├── index.html        # Semantic HTML5 markup, header, chat window, input area
-├── style.css         # Modern, responsive styles, animations, RTL/LTR rules
-├── app.js            # UI logic, auto-resize, scrolling, backend connector
-└── README.md         # Documentation and backend setup guide
+project-1/
+├── public/
+│   └── favicon.svg       # Vector gradient bot icon
+├── src/
+│   ├── main.js           # Chat interface logic, auto-resize, backend connector
+│   └── style.css         # Modern responsive styling, RTL/LTR rules, animations
+├── index.html            # Vite HTML entry point
+├── vite.config.js        # Vite bundler configuration
+├── package.json          # Vite scripts and dependencies
+├── vercel.json           # Vercel Vite deployment configuration
+└── README.md             # Project documentation and guide
 ```

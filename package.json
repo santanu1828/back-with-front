@@ -1,20 +1,16 @@
-﻿{
+{
   "name": "omnichat",
+  "private": true,
   "version": "1.0.0",
-  "description": "OmniChat - Multilingual Chatbot Front-End Interface",
+  "type": "module",
   "scripts": {
-    "dev": "npx serve .",
-    "start": "npx serve ."
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "chatbot",
-    "multilingual",
-    "unicode",
-    "bidi",
-    "rtl",
-    "gemini",
-    "vercel"
-  ],
+  "devDependencies": {
+    "vite": "^6.2.0"
+  },
   "author": "Santanu Ghosh",
   "license": "MIT"
 }

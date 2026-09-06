@@ -1,3 +1,5 @@
+﻿import './style.css';
+
 /**
  * OmniChat - Multilingual Chatbot Front-End
  * 
@@ -61,7 +63,7 @@
         return data.reply || data.response || data.message || JSON.stringify(data);
       } catch (err) {
         console.error('Backend connection error:', err);
-        return `⚠️ Connection error: Unable to reach the chat backend (${err.message}).`;
+        return `âš ï¸ Connection error: Unable to reach the chat backend (${err.message}).`;
       }
     }
 
@@ -80,42 +82,42 @@
 
     // Arabic / RTL check
     if (/[\u0600-\u06FF\u0750-\u077F]/.test(input)) {
-      return `مرحباً بك! لقد استلمت رسالتك بكل وضوح: "${input}"\n\nأنا جاهز لمساعدتك في أي سؤال أو موضوع ترغب في مناقشته.`;
+      return `Ù…Ø±Ø­Ø¨Ø§Ù‹ Ø¨Ùƒ! Ù„Ù‚Ø¯ Ø§Ø³ØªÙ„Ù…Øª Ø±Ø³Ø§Ù„ØªÙƒ Ø¨ÙƒÙ„ ÙˆØ¶ÙˆØ­: "${input}"\n\nØ£Ù†Ø§ Ø¬Ø§Ù‡Ø² Ù„Ù…Ø³Ø§Ø¹Ø¯ØªÙƒ ÙÙŠ Ø£ÙŠ Ø³Ø¤Ø§Ù„ Ø£Ùˆ Ù…ÙˆØ¶ÙˆØ¹ ØªØ±ØºØ¨ ÙÙŠ Ù…Ù†Ø§Ù‚Ø´ØªÙ‡.`;
     }
 
     // Hebrew / RTL check
     if (/[\u0590-\u05FF]/.test(input)) {
-      return `שלום! קיבלתי את ההודעה שלך: "${input}". איך אוכל לעזור לך היום?`;
+      return `×©×œ×•×! ×§×™×‘×œ×ª×™ ××ª ×”×”×•×“×¢×” ×©×œ×š: "${input}". ××™×š ××•×›×œ ×œ×¢×–×•×¨ ×œ×š ×”×™×•×?`;
     }
 
     // Hindi / Devanagari script check
     if (/[\u0900-\u097F]/.test(input)) {
-      return `नमस्ते! मुझे आपका संदेश प्राप्त हुआ: "${input}"।\n\nमैं आपकी किस प्रकार सहायता कर सकता हूँ?`;
+      return `à¤¨à¤®à¤¸à¥à¤¤à¥‡! à¤®à¥à¤à¥‡ à¤†à¤ªà¤•à¤¾ à¤¸à¤‚à¤¦à¥‡à¤¶ à¤ªà¥à¤°à¤¾à¤ªà¥à¤¤ à¤¹à¥à¤†: "${input}"à¥¤\n\nà¤®à¥ˆà¤‚ à¤†à¤ªà¤•à¥€ à¤•à¤¿à¤¸ à¤ªà¥à¤°à¤•à¤¾à¤° à¤¸à¤¹à¤¾à¤¯à¤¤à¤¾ à¤•à¤° à¤¸à¤•à¤¤à¤¾ à¤¹à¥‚à¤?`;
     }
 
     // Chinese script check
     if (/[\u4E00-\u9FFF]/.test(input)) {
-      return `你好！我已收到您的消息：“${input}”。\n\n请问今天有什么我可以为您效劳的吗？`;
+      return `ä½ å¥½ï¼æˆ‘å·²æ”¶åˆ°æ‚¨çš„æ¶ˆæ¯ï¼šâ€œ${input}â€ã€‚\n\nè¯·é—®ä»Šå¤©æœ‰ä»€ä¹ˆæˆ‘å¯ä»¥ä¸ºæ‚¨æ•ˆåŠ³çš„å—ï¼Ÿ`;
     }
 
     // Japanese (Hiragana, Katakana, Kanji) check
     if (/[\u3040-\u309F\u30A0-\u30FF]/.test(input)) {
-      return `こんにちは！メッセージを受け取りました：「${input}」\n\n何かお手伝いできることがあれば、お気軽にどうぞ！`;
+      return `ã“ã‚“ã«ã¡ã¯ï¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å—ã‘å–ã‚Šã¾ã—ãŸï¼šã€Œ${input}ã€\n\nä½•ã‹ãŠæ‰‹ä¼ã„ã§ãã‚‹ã“ã¨ãŒã‚ã‚Œã°ã€ãŠæ°—è»½ã«ã©ã†ãžï¼`;
     }
 
     // Russian / Cyrillic script check
     if (/[\u0400-\u04FF]/.test(input)) {
-      return `Здравствуйте! Я получил ваше сообщение: "${input}". Чем я могу вам помочь сегодня?`;
+      return `Ð—Ð´Ñ€Ð°Ð²ÑÑ‚Ð²ÑƒÐ¹Ñ‚Ðµ! Ð¯ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð» Ð²Ð°ÑˆÐµ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ: "${input}". Ð§ÐµÐ¼ Ñ Ð¼Ð¾Ð³Ñƒ Ð²Ð°Ð¼ Ð¿Ð¾Ð¼Ð¾Ñ‡ÑŒ ÑÐµÐ³Ð¾Ð´Ð½Ñ?`;
     }
 
     // Spanish / Portuguese greetings
-    if (trimmed.includes('hola') || trimmed.includes('cómo estás') || trimmed.includes('ola') || trimmed.includes('obrigado')) {
-      return `¡Hola! He recibido tu mensaje: "${input}".\n\nEstoy aquí para ayudarte con cualquier consulta o tema. ¿En qué podemos trabajar hoy?`;
+    if (trimmed.includes('hola') || trimmed.includes('cÃ³mo estÃ¡s') || trimmed.includes('ola') || trimmed.includes('obrigado')) {
+      return `Â¡Hola! He recibido tu mensaje: "${input}".\n\nEstoy aquÃ­ para ayudarte con cualquier consulta o tema. Â¿En quÃ© podemos trabajar hoy?`;
     }
 
     // French greetings
     if (trimmed.includes('bonjour') || trimmed.includes('salut') || trimmed.includes('merci') || trimmed.includes('comment allez')) {
-      return `Bonjour ! J'ai bien reçu votre message : "${input}".\n\nComment puis-je vous assister aujourd'hui ?`;
+      return `Bonjour ! J'ai bien reÃ§u votre message : "${input}".\n\nComment puis-je vous assister aujourd'hui ?`;
     }
 
     // German greetings
@@ -125,7 +127,7 @@
 
     // Bengali greetings
     if (/[\u0980-\u09FF]/.test(input)) {
-      return `নমস্কার! আমি আপনার বার্তা পেয়েছি: "${input}"।\n\nআমি আপনাকে কীভাবে সাহায্য করতে পারি?`;
+      return `à¦¨à¦®à¦¸à§à¦•à¦¾à¦°! à¦†à¦®à¦¿ à¦†à¦ªà¦¨à¦¾à¦° à¦¬à¦¾à¦°à§à¦¤à¦¾ à¦ªà§‡à¦¯à¦¼à§‡à¦›à¦¿: "${input}"à¥¤\n\nà¦†à¦®à¦¿ à¦†à¦ªà¦¨à¦¾à¦•à§‡ à¦•à§€à¦­à¦¾à¦¬à§‡ à¦¸à¦¾à¦¹à¦¾à¦¯à§à¦¯ à¦•à¦°à¦¤à§‡ à¦ªà¦¾à¦°à¦¿?`;
     }
 
     // Default English / Universal response
