@@ -1,4 +1,4 @@
-﻿import './style.css';
+import './style.css';
 
 /**
  * OmniChat - Multilingual Chatbot Front-End
@@ -18,27 +18,27 @@
   // 1. Configuration & Backend Connector
   // =========================================================================
   const CONFIG = {
-    // Set to your actual backend API endpoint (e.g., 'http://localhost:8000/api/chat')
-    // When null or empty, it uses the built-in intelligent mock response generator.
-    backendApiUrl: '', 
+    // In dev, Vite proxy maps /chat to http://localhost:8000/chat.
+    // In production, VITE_BACKEND_URL can point to your live FastAPI deployment.
+    backendApiUrl: (import.meta.env && import.meta.env.VITE_BACKEND_URL)
+      ? `${import.meta.env.VITE_BACKEND_URL.replace(/\/$/, '')}/chat`
+      : '/chat',
 
     // Bot details
     botName: 'OmniChat',
-    simulatedLatencyMs: 900, // Realistic response delay for natural UX
+    simulatedLatencyMs: 600, // Realistic response delay for natural UX
   };
+
+  // Persistent session ID across page reloads
+  let currentSessionId = localStorage.getItem('omnichat_session_id') || null;
 
   /**
    * BACKEND INTEGRATION ADAPTER
    * 
-   * Connect this function to your real backend (Python FastAPI/Flask, Node/Express,
-   * OpenAI/Gemini/Claude endpoints, etc.)
-   *
-   * @param {string} userMessage - The raw message input in any language
-   * @param {Array<{role: string, content: string}>} history - Full conversation history
-   * @returns {Promise<string>} - The bot's text reply
+   * Connects to the FastAPI backend at /chat with session management.
+   * Gracefully falls back to local intelligent simulation if backend is offline.
    */
   async function sendMessageToBackend(userMessage, history) {
-    // If a real backend URL is configured, call it:
     if (CONFIG.backendApiUrl) {
       try {
         const response = await fetch(CONFIG.backendApiUrl, {
@@ -49,26 +49,44 @@
           },
           body: JSON.stringify({
             message: userMessage,
-            history: history,
-            timestamp: new Date().toISOString()
+            session_id: currentSessionId,
           }),
         });
 
         if (!response.ok) {
-          throw new Error(`Server returned error status: ${response.status}`);
+          let errorDetail = `Server error (${response.status})`;
+          try {
+            const errJson = await response.json();
+            if (errJson && errJson.detail) errorDetail = errJson.detail;
+          } catch (_) {}
+          throw new Error(errorDetail);
         }
 
         const data = await response.json();
-        // Adjust according to your backend payload structure (e.g., data.reply or data.message)
-        return data.reply || data.response || data.message || JSON.stringify(data);
+        if (data.session_id) {
+          currentSessionId = data.session_id;
+          localStorage.setItem('omnichat_session_id', data.session_id);
+        }
+
+        return {
+          reply: data.reply || data.message || 'No response from backend.',
+          detectedLanguage: data.detected_language || null,
+          isOffline: false,
+        };
       } catch (err) {
-        console.error('Backend connection error:', err);
-        return `âš ï¸ Connection error: Unable to reach the chat backend (${err.message}).`;
+        console.warn('Backend unavailable or returned error, falling back to local simulation:', err);
+        const mockReply = await simulateMultilingualBackend(userMessage);
+        return {
+          reply: mockReply,
+          detectedLanguage: null,
+          isOffline: true,
+          errorMsg: err.message,
+        };
       }
     }
 
-    // Otherwise, simulate a thoughtful multilingual backend response
-    return await simulateMultilingualBackend(userMessage);
+    const mockReply = await simulateMultilingualBackend(userMessage);
+    return { reply: mockReply, detectedLanguage: null, isOffline: false };
   }
 
   /**
@@ -195,8 +213,9 @@
    * 
    * @param {string} text - Message text
    * @param {'user' | 'bot'} sender - Sender type
+   * @param {{ lang?: string, isOffline?: boolean, errorMsg?: string }} [meta] - Optional metadata
    */
-  function appendMessage(text, sender) {
+  function appendMessage(text, sender, meta = {}) {
     const wrapper = document.createElement('div');
     wrapper.className = `message-wrapper ${sender}`;
 
@@ -216,9 +235,24 @@
     bubble.setAttribute('dir', 'auto');
     bubble.textContent = text; // Safe against XSS
 
+    if (meta.isOffline && meta.errorMsg) {
+      const offlineNotice = document.createElement('span');
+      offlineNotice.className = 'offline-notice';
+      offlineNotice.textContent = `Backend offline (${meta.errorMsg}) — showing simulated reply.`;
+      bubble.appendChild(offlineNotice);
+    }
+
     const timestamp = document.createElement('span');
     timestamp.className = 'message-timestamp';
     timestamp.textContent = getCurrentTimeString();
+
+    if (meta.lang) {
+      const langTag = document.createElement('span');
+      langTag.className = 'lang-tag';
+      langTag.textContent = meta.lang.toUpperCase();
+      langTag.title = `Detected Language: ${meta.lang}`;
+      timestamp.appendChild(langTag);
+    }
 
     bubbleGroup.appendChild(bubble);
     bubbleGroup.appendChild(timestamp);
@@ -294,11 +328,15 @@
 
     try {
       // 4. Fetch response from backend / mock engine
-      const botResponse = await sendMessageToBackend(trimmedText, conversationHistory);
+      const res = await sendMessageToBackend(trimmedText, conversationHistory);
       
       // 5. Hide typing indicator & render bot message
       showTypingIndicator(false);
-      appendMessage(botResponse, 'bot');
+      appendMessage(res.reply, 'bot', {
+        lang: res.detectedLanguage,
+        isOffline: res.isOffline,
+        errorMsg: res.errorMsg,
+      });
     } catch (err) {
       console.error('Error in message flow:', err);
       showTypingIndicator(false);
@@ -315,6 +353,9 @@
     if (confirm('Clear this chat conversation?')) {
       // Retain only the initial welcome message
       conversationHistory = [];
+      currentSessionId = null;
+      localStorage.removeItem('omnichat_session_id');
+
       const firstWelcome = messagesContainer.querySelector('[data-id="welcome-msg"]');
       
       // Clear container

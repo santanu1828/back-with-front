@@ -539,3 +539,27 @@ body {
     display: none; /* Hide keyboard shortcut hints on touch devices */
   }
 }
+
+.lang-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #e0e7ff;
+  color: #4338ca;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.offline-notice {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border-subtle);
+}
