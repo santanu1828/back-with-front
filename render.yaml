@@ -15,4 +15,5 @@ services:
       - key: MONGODB_URI
         sync: false
       - key: MODEL_NAME
-        value: gemini-3.6-flash
+        value: gemini-flash-latest
+

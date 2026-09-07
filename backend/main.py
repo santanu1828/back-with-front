@@ -36,7 +36,8 @@ SYSTEM_PROMPT = (
     "If the user switches languages mid-conversation, switch with them."
 )
 
-MODEL_NAME = os.environ.get("MODEL_NAME", "gemini-3.6-flash")
+MODEL_NAME = os.environ.get("MODEL_NAME", "gemini-flash-latest")
+
 
 
 # Initialize MongoDB with resilient fallback to in-memory store if unavailable
@@ -45,7 +46,12 @@ messages_collection = None
 in_memory_history = {}
 
 try:
-    mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+    mongo_client = MongoClient(
+        MONGO_URI,
+        serverSelectionTimeoutMS=2000,
+        connectTimeoutMS=2000,
+        socketTimeoutMS=2000,
+    )
     mongo_client.admin.command("ping")
     db = mongo_client["chatbot_db"]
     messages_collection = db["messages"]
@@ -165,17 +171,35 @@ def chat(req: ChatRequest):
         append_turn(session_id, "model", reply_text)
         return ChatResponse(reply=reply_text, session_id=session_id, detected_language=lang)
 
-    try:
-        client = genai.Client(api_key=api_key)
-        chat_session = client.chats.create(
-            model=MODEL_NAME,
-            config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT),
-            history=to_genai_history(history),
-        )
-        response = chat_session.send_message(req.message)
-        reply_text = response.text
-    except Exception as e:
-        raise HTTPException(status_code=502, detail="LLM call failed: " + str(e))
+    # Resilient model candidates to handle 503 High Demand / temporary capacity spikes
+    candidate_models = []
+    for m in [MODEL_NAME, "gemini-flash-latest", "gemini-3.5-flash", "gemini-3.6-flash", "gemini-flash-lite-latest", "gemini-pro-latest"]:
+        if m and m not in candidate_models:
+            candidate_models.append(m)
+
+
+    client = genai.Client(api_key=api_key)
+    reply_text = None
+    last_error = None
+
+    for candidate in candidate_models:
+        try:
+            chat_session = client.chats.create(
+                model=candidate,
+                config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT),
+                history=to_genai_history(history),
+            )
+            response = chat_session.send_message(req.message)
+            if response and response.text:
+                reply_text = response.text
+                break
+        except Exception as e:
+            last_error = e
+            print(f"[WARN] Model '{candidate}' encountered error ({e}). Trying fallback model...")
+
+    if not reply_text:
+        raise HTTPException(status_code=502, detail="LLM call failed: " + str(last_error))
+
 
     append_turn(session_id, "user", req.message)
     append_turn(session_id, "model", reply_text)
